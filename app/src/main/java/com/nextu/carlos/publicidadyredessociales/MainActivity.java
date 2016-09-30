@@ -4,9 +4,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -26,6 +27,32 @@ public class MainActivity extends AppCompatActivity {
     private LoginButton loginB;
     private CallbackManager cM;
 
+    private AdView adView;
+
+
+    @Override
+    protected void onResume() {
+        if(adView != null){
+            adView.resume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        if(adView != null){
+            adView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(adView != null){
+            adView.destroy();
+        }
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Intento de inicio de sesión fallido.", Toast.LENGTH_LONG).show();
             }
         });
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        adView = (AdView) findViewById(R.id.ad_view);
+        adView.loadAd(adRequest);
     }
 
     private void getFbKeyHash(String packageName) {
